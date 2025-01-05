@@ -29,6 +29,9 @@
         .not-lived {
             background-color: gray;
         }
+        .birthday {
+            background-color: gold;
+        }
         h1 {
             font-size: 1.5rem;
             color: white;
@@ -51,15 +54,34 @@
         // Calculate weeks lived
         const weeksLived = Math.floor((today - birthDate) / (1000 * 60 * 60 * 24 * 7));
 
+        // Calculate birthday weeks
+        const birthdayWeeks = [];
+        for (let year = 1; year <= 50; year++) {
+            const birthday = new Date(birthDate.getFullYear() + year, birthDate.getMonth(), birthDate.getDate());
+            const weeksSinceBirth = Math.floor((birthday - birthDate) / (1000 * 60 * 60 * 24 * 7));
+            if (weeksSinceBirth <= totalWeeks) {
+                birthdayWeeks.push(weeksSinceBirth);
+            }
+        }
+
         // Generate squares
         const grid = document.getElementById('progress-grid');
         for (let i = 0; i < totalWeeks; i++) {
             const square = document.createElement('div');
             square.classList.add('square', 'position-relative');
-            square.classList.add(i < weeksLived ? 'lived' : 'not-lived');
-            square.setAttribute('data-bs-toggle', 'tooltip');
-            square.setAttribute('data-bs-placement', 'top');
-            square.setAttribute('title', `Week ${i + 1} of ${totalWeeks}`);
+
+            if (birthdayWeeks.includes(i)) {
+                square.classList.add('birthday');
+                const birthdayIndex = birthdayWeeks.indexOf(i) + 1;
+                square.setAttribute('title', `Your ${birthdayIndex + birthDate.getFullYear()}th Birthday`);
+            } else if (i < weeksLived) {
+                square.classList.add('lived');
+                square.setAttribute('title', `Week ${i + 1} of ${totalWeeks} (Lived)`);
+            } else {
+                square.classList.add('not-lived');
+                square.setAttribute('title', `Week ${i + 1} of ${totalWeeks}`);
+            }
+
             grid.appendChild(square);
         }
 
