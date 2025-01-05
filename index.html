@@ -60,7 +60,7 @@
             const birthday = new Date(birthDate.getFullYear() + year, birthDate.getMonth(), birthDate.getDate());
             const weeksSinceBirth = Math.floor((birthday - birthDate) / (1000 * 60 * 60 * 24 * 7));
             if (weeksSinceBirth <= totalWeeks) {
-                birthdayWeeks.push(weeksSinceBirth);
+                birthdayWeeks.push({ week: weeksSinceBirth, age: year });
             }
         }
 
@@ -70,22 +70,25 @@
             const square = document.createElement('div');
             square.classList.add('square', 'position-relative');
 
-            if (birthdayWeeks.includes(i)) {
+            const birthday = birthdayWeeks.find(bw => bw.week === i);
+            if (birthday) {
                 square.classList.add('birthday');
-                const birthdayIndex = birthdayWeeks.indexOf(i) + 1;
-                square.setAttribute('title', `Your ${birthdayIndex + birthDate.getFullYear()}th Birthday`);
+                square.setAttribute('data-bs-toggle', 'tooltip');
+                square.setAttribute('data-bs-title', `Твои ${birthday.age} лет`);
             } else if (i < weeksLived) {
                 square.classList.add('lived');
-                square.setAttribute('title', `Week ${i + 1} of ${totalWeeks} (Lived)`);
+                square.setAttribute('data-bs-toggle', 'tooltip');
+                square.setAttribute('data-bs-title', `Неделя ${i + 1} из ${totalWeeks} (Прожито)`);
             } else {
                 square.classList.add('not-lived');
-                square.setAttribute('title', `Week ${i + 1} of ${totalWeeks}`);
+                square.setAttribute('data-bs-toggle', 'tooltip');
+                square.setAttribute('data-bs-title', `Неделя ${i + 1} из ${totalWeeks}`);
             }
 
             grid.appendChild(square);
         }
 
-        // Initialize tooltips
+        // Initialize tooltips using Bootstrap
         const tooltips = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         tooltips.forEach(tooltip => new bootstrap.Tooltip(tooltip));
     </script>
